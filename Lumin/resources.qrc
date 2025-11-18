@@ -1,0 +1,24 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>Pasted image.png</file>
+        <file>help.png</file>
+        <file>check.png</file>
+        <file>luminIcon.png</file>
+        <file>successIcon.png</file>
+        <file>armenian.png</file>
+        <file>english.png</file>
+        <file>russian.png</file>
+        <file>downarrow.png</file>
+        <file>passwordHint.png</file>
+        <file>nonevalid.png</file>
+        <file>valid.png</file>
+        <file>collapse.png</file>
+        <file>dash.png</file>
+        <file>dashcheck.png</file>
+        <file>cources.png</file>
+        <file>instructors.png</file>
+        <file>settings.png</file>
+        <file>transactions.png</file>
+        <file>users.png</file>
+    </qresource>
+</RCC>
