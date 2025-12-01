@@ -12,6 +12,8 @@ int main(int argc,char* argv[]){
     QApplication app(argc,argv);
 
     DashboardLeft form;
+    VerifyForm vf;
+    vf.show();
     form.show();
     app.exec();
 }
