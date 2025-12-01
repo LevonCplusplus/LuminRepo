@@ -51,7 +51,10 @@ void PasswordHintWidget::paintEvent(QPaintEvent* ){
             painter.drawText(65, i*35 + 79 ,rows[i].line);
         }
     }
+
+
 }
+
 bool PasswordHintWidget::validationUpdate(const QString& str){
 
     QRegularExpression reLetters("^[A-Za-z\\-_!?\\=\\0-9\\+]+$");
@@ -66,5 +69,6 @@ bool PasswordHintWidget::validationUpdate(const QString& str){
     rows[3].valid = reDigit.match(str).hasMatch();
     rows[4].valid = reSpecial.match(str).hasMatch();
     rows[1].valid &= re1.match(str).hasMatch() || re2.match(str).hasMatch();
-    return rows[0].valid & rows[1].valid & rows[2].valid & rows[3].valid & rows[4].valid;
+
+    return rows[0].valid && rows[1].valid && rows[2].valid && rows[3].valid && rows[4].valid;
 }

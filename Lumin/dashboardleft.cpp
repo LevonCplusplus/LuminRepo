@@ -1,21 +1,15 @@
 #include "dashboardleft.h"
 #include <QResizeEvent>
 
-DashboardLeft::DashboardLeft(QWidget* parent): QWidget(parent) {
+DashboardLeft::DashboardLeft(QWidget* parent): QLabel(parent) {
     resize(500,600);
-    collapsed = false;
+    this->setStyleSheet(
+        "   border: none;"
+        "   background-color: #f3f5f7;"
+        "   border-radius: 12px;"
+        );
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     setFixedWidth(300);
-
-
-    QLabel* rightWidget = new QLabel;
-    rightWidget->setStyleSheet(
-        "border: 1px solid #e2e2ee;"
-        "background-color: white;"
-        "border-radius: 12px;"
-        );
-
-   // rightWidget->setMinimumSize(100, 100);
 
 
     QWidget* leftHeaderWidget = new QWidget;
@@ -24,8 +18,9 @@ DashboardLeft::DashboardLeft(QWidget* parent): QWidget(parent) {
     leftHeaderWidget->setFixedSize(300,60);
     QPixmap luminPixmap(":/images/luminIcon.png");
     QPixmap scLumin = luminPixmap.scaled(32,32,Qt::KeepAspectRatio,Qt::SmoothTransformation);
-    QLabel* iconLabel = new QLabel;
+    iconLabel = new QLabel;
     iconLabel->setPixmap(scLumin);
+    iconLabel->installEventFilter(this);
 
     QLabel* leftHeader = new QLabel("Lumin Admin Panel");
     leftHeader->setStyleSheet("font-family: 'Outfit';"
@@ -33,7 +28,11 @@ DashboardLeft::DashboardLeft(QWidget* parent): QWidget(parent) {
                               "line-height: 150%;"
                               "letter-spacing: 0%;"
                               "font-size: 16px;"
-                              );
+                              );        setFixedWidth(300);
+    for(auto btn : buttonStates.keys()) {
+        btn->setText(buttonStates[btn].text);
+        btn->setFixedSize(buttonStates[btn].size);
+    }
     leftHeader->setFixedSize(170,20);
 
 
@@ -76,6 +75,7 @@ DashboardLeft::DashboardLeft(QWidget* parent): QWidget(parent) {
                                    "}");
 
     dashboardButton->setFixedSize(270,36);
+    connect(dashboardButton,&QPushButton::pressed,this,&DashboardLeft::dashboardPressed);
     QIcon dashboardIcon;
 
 
@@ -105,6 +105,8 @@ DashboardLeft::DashboardLeft(QWidget* parent): QWidget(parent) {
                                    "}");
 
     instructorsButton->setFixedSize(270,36);
+    connect(instructorsButton,&QPushButton::pressed,this,&DashboardLeft::instructorsPressed);
+
     QIcon instructorsIcon;
 
 
@@ -195,6 +197,8 @@ DashboardLeft::DashboardLeft(QWidget* parent): QWidget(parent) {
 
 
     transactionsButton->setFixedSize(270,36);
+    connect(transactionsButton,&QPushButton::pressed,this,&DashboardLeft::transactionsPressed);
+
     QIcon transactionsIcon;
 
 
@@ -224,6 +228,7 @@ DashboardLeft::DashboardLeft(QWidget* parent): QWidget(parent) {
                                      "}");
 
     settingsButton->setFixedSize(270,36);
+    connect(settingsButton,&QPushButton::pressed,this,&DashboardLeft::settingsPressed);
     QIcon settingsIcon;
 
 
@@ -243,6 +248,18 @@ DashboardLeft::DashboardLeft(QWidget* parent): QWidget(parent) {
     toolBarLayout->addWidget(settingsButton);
     toolBarLayout->addStretch();
 
+    QButtonGroup* group = new QButtonGroup(this);
+    group->setExclusive(true);
+
+    group->addButton(dashboardButton);
+    group->addButton(instructorsButton);
+    group->addButton(courcesButton);
+    group->addButton(usersButton);
+    group->addButton(transactionsButton);
+    group->addButton(settingsButton);
+
+    dashboardButton->setChecked(true);
+
     buttonStates[dashboardButton]   = { dashboardButton->text(), dashboardButton->size() };
     buttonStates[instructorsButton] = { instructorsButton->text(), instructorsButton->size() };
     buttonStates[courcesButton]     = { courcesButton->text(), courcesButton->size() };
@@ -250,21 +267,12 @@ DashboardLeft::DashboardLeft(QWidget* parent): QWidget(parent) {
     buttonStates[transactionsButton]= { transactionsButton->text(), transactionsButton->size() };
     buttonStates[settingsButton]    = { settingsButton->text(), settingsButton->size() };
 
+
     connect(collapseButton, &QPushButton::clicked, [this](){
-        if(!collapsed){
-            setFixedWidth(60);
-
-            for(auto btn : buttonStates.keys()) {
-                btn->setFixedWidth(28);
-                btn->setText("");
-            }
-        }else{
-            setFixedWidth(300);
-
-            for(auto btn : buttonStates.keys()) {
-                btn->setText(buttonStates[btn].text);
-                btn->setFixedSize(buttonStates[btn].size);
-            }
+        setFixedWidth(60);
+        for(auto btn : buttonStates.keys()) {
+            btn->setText("");
+            btn->setFixedSize(28,36);
         }
 
     });
@@ -274,11 +282,23 @@ DashboardLeft::DashboardLeft(QWidget* parent): QWidget(parent) {
 
 
 }
-
-void DashboardLeft::paintEvent(QPaintEvent *event)
+bool DashboardLeft::eventFilter(QObject *obj, QEvent *event)
 {
-    QPainter Painter(this);
-    Painter.fillRect(rect(), QColor("#F3FfF7"));
+    if (obj == iconLabel && event->type() == QEvent::MouseButtonPress) {
+        setFixedWidth(300);
+        for(auto btn : buttonStates.keys()) {
+            btn->setText(buttonStates[btn].text);
+            btn->setFixedSize(buttonStates[btn].size);
+        }
+        return true;
+    }
+    return QWidget::eventFilter(obj, event);
 }
+
+// void DashboardLeft::paintEvent(QPaintEvent *event)
+// {
+//     QPainter Painter(this);
+//     Painter.fillRect(rect(), QColor("#F3FfF7"));
+// }
 
 

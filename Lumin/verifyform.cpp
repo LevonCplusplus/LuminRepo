@@ -1,6 +1,8 @@
 #include "verifyform.h"
 
-VerifyForm::VerifyForm(QWidget* parent):QWidget(parent) {
+VerifyForm::VerifyForm(const QString& mail1,const QString& sessionToken1, QWidget* parent)
+    :QWidget(parent), mail(mail1),sessionToken(sessionToken1){
+
     QVBoxLayout* mainlayout = new QVBoxLayout(this);
     this-> setStyleSheet("background-color: white");
     QPushButton* helpButton = new QPushButton(this);
@@ -60,9 +62,7 @@ VerifyForm::VerifyForm(QWidget* parent):QWidget(parent) {
     textLabel->setAlignment(Qt::AlignHCenter);
     textLabel->setFixedSize(420,50);
 
-    QString email = "testemailabdef@gmail.com";
 
-    email = email.right(14);
 
     QString textForMail = QString(
         "<div>"
@@ -71,10 +71,10 @@ VerifyForm::VerifyForm(QWidget* parent):QWidget(parent) {
         "A code has been sent to "
         "</span>"
         "<span style='color: #1a1b25;line-height: 150%; font-weight: 500; font-size: 14px;'>"
-        "*******%1"
+        "%1"
         "</span>"
         "</div>"
-        ).arg(email);
+        ).arg(mail);
     textLabel->setText(textForMail);
 
     MultipleEdit * multiEdit = new MultipleEdit(6);
@@ -113,11 +113,26 @@ VerifyForm::VerifyForm(QWidget* parent):QWidget(parent) {
         verifyButton->setDisabled(!cond);
     });
 
+    connect(verifyButton,&QPushButton::clicked,[multiEdit, this](){
+        emit onVerifyClicked(multiEdit->txt(), this->sessionToken);
+    });
+
 
     QHBoxLayout* timeLayout = new QHBoxLayout;
-    QLabel* timeLabel =  new QLabel;
-    int totalSeconds = 90;
-    QPushButton* reSendButton = new QPushButton;
+    timeLabel =  new QLabel;
+    timeLabel->setFixedSize(160,20);
+    timeLabel->setAlignment(Qt::AlignCenter);
+    timeLabel->setStyleSheet(
+        "   width: 160px;"
+        "   height: 20px;"
+        "   font-family: 'Outfit';"
+        "   color: #666e6d;"
+        "   font-size: 14px;"
+        "   line-height: 120%;"
+        "   font-weight: 400;"
+        );
+
+    reSendButton = new QPushButton;
     reSendButton->setText("Resend code");
     reSendButton->setFixedSize(165,20);
     reSendButton->setStyleSheet(
@@ -136,60 +151,12 @@ VerifyForm::VerifyForm(QWidget* parent):QWidget(parent) {
         "}"
         );
     reSendButton->setDisabled(true);
-    int minutes = totalSeconds / 60;
-    int seconds = totalSeconds % 60;
-    QTimer *timer = new QTimer(this);
-    QString text = QString("%1:%2")
-                       .arg(minutes, 2, 10, QChar('0'))
-                       .arg(seconds, 2, 10, QChar('0'));
-    QString textForTime = QString("<div>"
-                                  "<span style = ' color: #14201f; font-size: 14px; font-weight: 400;'>"
-                                  "Time Remaining "
-                                  "</span>"
-                                  "<span style = ' color: #14201f; font-size: 14px; font-weight: 700;'>"
-                                  "%1"
-                                  "</span>"
-                                  "<div>").arg(text);
-
-    timeLabel->setText(textForTime);
-connect(timer, &QTimer::timeout, this, [=]() mutable {
-            totalSeconds--;
-
-            minutes = totalSeconds / 60;
-            seconds = totalSeconds % 60;
-
-            text = QString("%1:%2")
-                               .arg(minutes, 2, 10, QChar('0'))
-                               .arg(seconds, 2, 10, QChar('0'));
-            textForTime = QString("<div>"
-                                          "<span style = ' color: #14201f; font-size: 14px; font-weight: 400;'>"
-                                          "Time Remaining "
-                                          "</span>"
-                                          "<span style = ' color: #14201f; font-size: 14px; font-weight: 700;'>"
-                                          "%1"
-                                          "</span>"
-                                          "<div>").arg(text);
-
-            timeLabel->setText(textForTime);
-
-            if (totalSeconds <= 0) {
-                reSendButton->setDisabled(false);
-                timer->stop();
-            }
+    sendTime(90);
+    connect(reSendButton, &QPushButton::clicked,[this](){
+        sendTime(90);
+        emit onResendClicked();
     });
 
-    timer->start(1000);
-    timeLabel->setFixedSize(160,20);
-    timeLabel->setAlignment(Qt::AlignCenter);
-    timeLabel->setStyleSheet(
-        "   width: 160px;"
-        "   height: 20px;"
-        "   font-family: 'Outfit';"
-        "   color: #666e6d;"
-        "   font-size: 14px;"
-        "   line-height: 120%;"
-        "   font-weight: 400;"
-        );
 
 
     timeLayout->addSpacing(50);
@@ -216,6 +183,9 @@ connect(timer, &QTimer::timeout, this, [=]() mutable {
         "}"
         );
 
+    connect(backToLoginButton, &QPushButton::clicked,[this](){
+        emit onBackToLoginClicked();
+    });
 
 
     QLabel* agreement = new QLabel(this);
@@ -255,4 +225,57 @@ connect(timer, &QTimer::timeout, this, [=]() mutable {
     mainlayout->addWidget(backToLoginButton);
     mainlayout->addStretch();
     mainlayout->addWidget(agreement);
+
 }
+void VerifyForm::sendTime(int totalSeconds){
+    int minutes = totalSeconds / 60;
+    int seconds = totalSeconds % 60;
+    QTimer *timer = new QTimer(this);
+    QString text = QString("%1:%2")
+                       .arg(minutes, 2, 10, QChar('0'))
+                       .arg(seconds, 2, 10, QChar('0'));
+    QString textForTime = QString("<div>"
+                                  "<span style = ' color: #14201f; font-size: 14px; font-weight: 400;'>"
+                                  "Time Remaining "
+                                  "</span>"
+                                  "<span style = ' color: #14201f; font-size: 14px; font-weight: 700;'>"
+                                  "%1"
+                                  "</span>"
+                                  "<div>").arg(text);
+
+    timeLabel->setText(textForTime);
+    connect(timer, &QTimer::timeout, this, [=]() mutable {
+        totalSeconds--;
+
+        minutes = totalSeconds / 60;
+        seconds = totalSeconds % 60;
+
+        text = QString("%1:%2")
+                   .arg(minutes, 2, 10, QChar('0'))
+                   .arg(seconds, 2, 10, QChar('0'));
+        textForTime = QString("<div>"
+                              "<span style = ' color: #14201f; font-size: 14px; font-weight: 400;'>"
+                              "Time Remaining "
+                              "</span>"
+                              "<span style = ' color: #14201f; font-size: 14px; font-weight: 700;'>"
+                              "%1"
+                              "</span>"
+                              "<div>").arg(text);
+
+        timeLabel->setText(textForTime);
+
+        if (totalSeconds <= 0) {
+            reSendButton->setDisabled(false);
+            timer->stop();
+        }
+    });
+
+    timer->start(1000);
+}
+void VerifyForm::updateVerify(const QString& mail, const QString& sessionToken){
+    this->mail = mail;
+    this->sessionToken = sessionToken;
+}
+
+
+

@@ -1,5 +1,5 @@
 #include "multipleedit.h"
-
+#include <QDebug>
 UnderlinedLineEdit::UnderlinedLineEdit(QWidget* parent)
     : QLineEdit(parent)
 {
@@ -90,4 +90,12 @@ void MultipleEdit::onTextChanged(int index, const QString &txt) {
     //     }
     //     boxes[length-1]->setFocus();
     //}
+}
+QString MultipleEdit::txt(){
+    QString text;
+    for(auto line : boxes){
+        text += line->text();
+    }
+    qDebug() << text;
+    return text;
 }

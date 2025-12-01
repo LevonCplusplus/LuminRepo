@@ -14,6 +14,10 @@
 #include "passwordhintwidget.h"
 
 class ResetPassForm: public QWidget{
+    Q_OBJECT
+signals:
+    void onBackToLoginClicked();
+
 public:
     ResetPassForm(QWidget* parent = nullptr);
 };

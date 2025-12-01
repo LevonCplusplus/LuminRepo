@@ -12,8 +12,15 @@
 
 class SuccessForm: public QWidget{
     Q_OBJECT
+signals:
+    void onStartClicked();
 public:
-    SuccessForm(QWidget* parent = nullptr);
+    SuccessForm(const QString& header, const QString& lowHeader, const QString& buttonText,QWidget* parent = nullptr);
+    void formUpdate(const QString& header, const QString& lowHeader, const QString& buttonText);
+private:
+    QPushButton* startButton;
+    QLabel* textLabel;
+    QLabel* headTextLabel;
 };
 
 #endif // SUCCESSFORM_H

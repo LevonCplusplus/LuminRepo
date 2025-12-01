@@ -13,6 +13,7 @@
 #include <QPushButton>
 #include <QCheckBox>
 
+
 #include "registerform.h"
 #include "verifyform.h"
 
@@ -21,14 +22,18 @@ class LoginForm : public QWidget
     Q_OBJECT
 public:
     explicit LoginForm(QWidget* parent = nullptr);
-
+public slots:
+    void sendLogin();
+signals:
+    void registerButtonClicked();
+    void onLoginClicked(const QString&,const QString&);
+    void onForgotPasswordClicked();
 protected:
-    void resizeEvent(QResizeEvent* event) override;
-
+    // void sendLogin();
 private:
-    QHBoxLayout* mainLayout;
-    QLabel* labelForPhoto;
-    QPixmap pixmap;
+    QLineEdit* emailEdit;
+    QLineEdit* passwordEdit;
+
 };
 
 

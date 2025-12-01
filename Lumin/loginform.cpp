@@ -2,16 +2,7 @@
 
  LoginForm::LoginForm(QWidget* parent):QWidget(parent) {
 
-    RegisterForm* regForm = new RegisterForm;
-    setMinimumSize(900, 800);
-    this->setStyleSheet("background-color: white;");
-
-    mainLayout = new QHBoxLayout(this);
-    QStackedWidget* stackedWidget = new QStackedWidget;
-    mainLayout->addWidget(stackedWidget);
-
-    QWidget* leftWidget = new QWidget(this);
-    QVBoxLayout* loginLayout = new QVBoxLayout(leftWidget);
+    QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
     QPushButton* helpButton = new QPushButton(this);
     QHBoxLayout* buttonLayout = new QHBoxLayout(helpButton);
@@ -21,14 +12,6 @@
     QLabel* iconLabel = new QLabel(this);
     QPixmap iconPixmap(":/images/help.png");
     iconLabel->setPixmap(iconPixmap.scaled(QSize(20, 20), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-
-    QPixmap pix(":/images/luminIcon.png");
-    QPixmap sc = pix.scaled(32,32,Qt::KeepAspectRatio,Qt::SmoothTransformation);
-    QLabel* luminIconLabel = new QLabel;
-    luminIconLabel->setFixedSize(420,32);
-    luminIconLabel->setPixmap(sc);
-    luminIconLabel->setAlignment(Qt::AlignCenter);
-
 
     QLabel* buttonLabel = new QLabel("Help", this);
     buttonLabel->setStyleSheet(
@@ -53,6 +36,12 @@
         "   color: black;"
         "}"
         );
+    QPixmap pix(":/images/luminIcon.png");
+    QPixmap sc = pix.scaled(32,32,Qt::KeepAspectRatio,Qt::SmoothTransformation);
+    QLabel* luminIconLabel = new QLabel;
+    luminIconLabel->setFixedSize(420,32);
+    luminIconLabel->setPixmap(sc);
+    luminIconLabel->setAlignment(Qt::AlignCenter);
 
     QLabel* headTextLabel = new QLabel("Welcome back to Lumin", this);
     headTextLabel->setFixedSize(420,30);
@@ -86,7 +75,7 @@
         "font-size: 14px;"
         "color: #000000;"
         );
-    QLineEdit* emailEdit = new QLineEdit(this);
+    emailEdit = new QLineEdit(this);
     emailEdit->setPlaceholderText("Enter your Email");
     emailEdit->setFixedSize(420,48);
     emailEdit->setStyleSheet(
@@ -121,7 +110,7 @@
         "color: #000000;"
         );
 
-    QLineEdit* passwordEdit = new QLineEdit(this);
+    passwordEdit = new QLineEdit(this);
     passwordEdit->setFixedSize(420,48);
     passwordEdit->setStyleSheet(
             "QLineEdit {"
@@ -208,6 +197,10 @@
         "}"
         );
 
+    connect(forgotButton,&QPushButton::clicked,[this](){
+       emit onForgotPasswordClicked();
+    });
+
     rememberMeLayout->addWidget(rememberMeButton,0,Qt::AlignLeft);
     rememberMeLayout->addWidget(forgotButton,0,Qt::AlignRight);
 
@@ -238,9 +231,8 @@
         "}"
         );
 
-    connect(regForm,&RegisterForm::loginClicked,[stackedWidget](){
-        stackedWidget->setCurrentIndex((stackedWidget->currentIndex() + 1) % 2);
-    });
+
+    connect(loginButton,&QPushButton::clicked,this,&LoginForm::sendLogin);
 
     QWidget* dontHaveWidget = new QWidget;
     QHBoxLayout* dontHaveLayout = new QHBoxLayout;
@@ -278,8 +270,8 @@
         "   text-decoration: underline;"
         "}"
         );
-    connect(registerButton,&QPushButton::clicked,[stackedWidget](){
-        stackedWidget->setCurrentIndex((stackedWidget->currentIndex() + 1) % 2);
+    connect(registerButton,&QPushButton::clicked,[this](){
+        emit registerButtonClicked();
     });
     dontHaveLayout->addStretch();
     dontHaveLayout->addWidget(dontHaveLabel);
@@ -307,51 +299,78 @@
         "}"
         );
 
-    loginLayout->addWidget(helpButton,0,Qt::AlignRight);
-    loginLayout->addStretch();
-    loginLayout->addWidget(luminIconLabel,0,Qt::AlignHCenter);
-    loginLayout->addWidget(headTextLabel,0,Qt::AlignHCenter);
-    loginLayout->addWidget(textLabel,0,Qt::AlignHCenter);
-    loginLayout->addWidget(emailLabel,0,Qt::AlignHCenter);
-    loginLayout->addSpacing(8);
-    loginLayout->addWidget(emailEdit,0,Qt::AlignHCenter);
-    loginLayout->addSpacing(8);
-    loginLayout->addWidget(passwordLabel,0,Qt::AlignHCenter);
-    loginLayout->addSpacing(8);
-    loginLayout->addWidget(passwordEdit,0,Qt::AlignHCenter);
-    loginLayout->addWidget(remember,0,Qt::AlignHCenter);
-    loginLayout->addSpacing(8);
-    loginLayout->addWidget(loginButton,0,Qt::AlignHCenter);
-    loginLayout->addSpacing(8);
-    loginLayout->addWidget(dontHaveWidget,0,Qt::AlignHCenter);
-    loginLayout->addStretch();
-    loginLayout->addWidget(agreement,0,Qt::AlignHCenter);
+    mainLayout->addWidget(helpButton,0,Qt::AlignRight);
+    mainLayout->addStretch();
+    mainLayout->addWidget(luminIconLabel,0,Qt::AlignHCenter);
+    mainLayout->addWidget(headTextLabel,0,Qt::AlignHCenter);
+    mainLayout->addWidget(textLabel,0,Qt::AlignHCenter);
+    mainLayout->addWidget(emailLabel,0,Qt::AlignHCenter);
+    mainLayout->addSpacing(8);
+    mainLayout->addWidget(emailEdit,0,Qt::AlignHCenter);
+    mainLayout->addSpacing(8);
+    mainLayout->addWidget(passwordLabel,0,Qt::AlignHCenter);
+    mainLayout->addSpacing(8);
+    mainLayout->addWidget(passwordEdit,0,Qt::AlignHCenter);
+    mainLayout->addWidget(remember,0,Qt::AlignHCenter);
+    mainLayout->addSpacing(8);
+    mainLayout->addWidget(loginButton,0,Qt::AlignHCenter);
+    mainLayout->addSpacing(8);
+    mainLayout->addWidget(dontHaveWidget,0,Qt::AlignHCenter);
+    mainLayout->addStretch();
+    mainLayout->addWidget(agreement,0,Qt::AlignHCenter);
 
-    stackedWidget->addWidget(leftWidget);
-    stackedWidget->addWidget(regForm);
+    // stackedWidget->addWidget(leftWidget);
+    // stackedWidget->addWidget(regForm);
 
 
-    labelForPhoto = new QLabel(this);
-    pixmap = QPixmap(":/images/Pasted image.png");
-    mainLayout->addWidget(labelForPhoto);
 
 
 }
 
- void LoginForm::resizeEvent(QResizeEvent* event)
- {
-     qDebug() << "Entering resizeEvent, size:" << event->size();
+void LoginForm::sendLogin(){
+    emit onLoginClicked(emailEdit->text(),passwordEdit->text());
+}
+ // void LoginForm::sendLogin()
+ // {
+ //     QUrl url("https://learning-dashboard-rouge.vercel.app/api/auth/login");
+ //     QNetworkRequest request(url);
+
+ //     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+ //     QJsonObject json;
+ //     json["email"] = emailEdit->text();
+ //     json["password"] = passwordEdit->text();
+
+ //     QJsonDocument doc(json);
+ //     QByteArray requestData = doc.toJson();
+ //     QNetworkAccessManager* manager = new QNetworkAccessManager(this);
+
+ //     QNetworkReply* reply = manager->post(request, requestData);
+
+ //     connect(reply, &QNetworkReply::finished, [reply,this]() {
+ //         QByteArray response = reply->readAll();
+ //         qDebug() << "Server reply:" << response;
+
+ //         QJsonDocument jsonDoc = QJsonDocument::fromJson(response);
+ //         QJsonObject obj = jsonDoc.object();
+
+ //         bool success = obj["success"].toBool();
+ //         QString message = obj["message"].toString();
+ //         if(success){
+ //            QJsonObject data = obj["data"].toObject();
+ //            QString mail = data["maskedEmail"].toString();
+ //            emit loginSuccess(mail);
+ //         }else{
+ //            qDebug() << "offf";
+ //         }
+
+ //         qDebug() << "Success:" << success;
+ //         qDebug() << "Message:" << message;
+
+ //         reply->deleteLater();
+ //     });
+ // }
 
 
-     if (!pixmap.isNull() ) {
-         QPixmap scaled = pixmap.scaled(
-             size().width() / 2,
-             size().height(),
-             Qt::KeepAspectRatio,
-             Qt::SmoothTransformation
-             );
-         labelForPhoto->setPixmap(scaled);
-     }
 
-     qDebug() << "Exiting resizeEvent";
- }
+

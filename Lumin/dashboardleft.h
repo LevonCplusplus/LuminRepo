@@ -12,11 +12,23 @@
 #include <QVBoxLayout>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QToolButton>
+#include <QButtonGroup>
 #include <QPainter>
 
 
-class DashboardLeft: public QWidget{
+class DashboardLeft: public QLabel{
+    Q_OBJECT
+public:
+    DashboardLeft(QWidget* parent = nullptr);
+//    void paintEvent(QPaintEvent *event);
+    bool eventFilter(QObject *obj, QEvent *event);
+
+signals:
+    void dashboardPressed();
+    void instructorsPressed();
+    void transactionsPressed();
+    void settingsPressed();
+private:
 
     struct ButtonInfo {
         QString text;
@@ -30,12 +42,7 @@ class DashboardLeft: public QWidget{
     QPushButton* usersButton;
     QPushButton* transactionsButton;
     QPushButton* settingsButton;
-    bool collapsed;
-
-public:
-    DashboardLeft(QWidget* parent = nullptr);
-    void paintEvent(QPaintEvent *event);
-
+    QLabel* iconLabel;
 };
 
 #endif // DASHBOARDLEFT_H

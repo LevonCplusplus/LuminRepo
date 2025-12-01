@@ -26,12 +26,19 @@ public:
     RegisterForm(QWidget* parent = nullptr);
     bool eventFilter(QObject* obj, QEvent* event);
     void resizeEvent(QResizeEvent *event);
+    void editsUpdate();
 
 signals:
-    void loginClicked();
+    void onloginClicked();
+    void onCreateButtonClicked(const QString& first, const QString& last, const QString& mail, const QString& pass);
 
 private:
+    QLineEdit* firstNameEdit;
+    QLineEdit* lastNameEdit;
+    QLineEdit* emailEdit;
     QLineEdit* passwordEdit;
+    QLineEdit* confirmEdit;
+    QPushButton* createButton;
     PasswordHintWidget* hints;
 };
 

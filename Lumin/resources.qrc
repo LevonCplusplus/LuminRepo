@@ -20,5 +20,6 @@
         <file>settings.png</file>
         <file>transactions.png</file>
         <file>users.png</file>
+        <file>revenue.png</file>
     </qresource>
 </RCC>

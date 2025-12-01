@@ -1,20 +1,22 @@
 #include "successform.h"
 
-SuccessForm::SuccessForm(QWidget* parent):QWidget(parent) {
+SuccessForm::SuccessForm(const QString& header,const QString& lowHeader,const QString& buttonText,QWidget* parent)
+    :QWidget(parent){
 
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     QHBoxLayout* langLayout = new QHBoxLayout;
-    mainLayout->addLayout(langLayout);
 
     this-> setStyleSheet("background-color: white");
-    QPushButton* helpButton = new QPushButton(this);
-    QHBoxLayout* buttonLayout = new QHBoxLayout(helpButton);
-    buttonLayout->setContentsMargins(16, 8, 12, 8);
-    buttonLayout->setSpacing(0);
+
 
     QComboBox * language = new QComboBox;
-    langLayout->addWidget(language);
-    langLayout->addStretch();
+    QIcon englishIcon(":/images/english.png");
+    QIcon russianIcon(":/images/russian.png");
+    QIcon armenianIcon(":/images/armenian.png");
+    language->addItem(englishIcon,"English");
+    language->addItem(russianIcon,"Russian");
+    language->addItem(armenianIcon,"Armenian");
+
     language->setFixedSize(176,48);
     language->setStyleSheet("QComboBox {"
                             "border-radius: 8px;"
@@ -53,24 +55,16 @@ SuccessForm::SuccessForm(QWidget* parent):QWidget(parent) {
         );
     language->setView(view);
 
-    QIcon englishIcon(":/images/english.png");
-    QIcon russianIcon(":/images/russian.png");
-    QIcon armenianIcon(":/images/armenian.png");
-    language->addItem(englishIcon,"English");
-    language->addItem(russianIcon,"Russian");
-    language->addItem(armenianIcon,"Armenian");
+
+    QPushButton* helpButton = new QPushButton(this);
+    helpButton->setFixedSize(93,48);
+    QHBoxLayout* buttonLayout = new QHBoxLayout(helpButton);
+    buttonLayout->setContentsMargins(16, 8, 12, 8);
+    buttonLayout->setSpacing(0);
 
     QLabel* iconLabel = new QLabel(this);
     QPixmap iconPixmap(":/images/help.png");
     iconLabel->setPixmap(iconPixmap.scaled(QSize(20, 20), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-
-    QPixmap pix(":/images/successIcon.png");
-    QPixmap sc = pix.scaled(172,162,Qt::KeepAspectRatio,Qt::SmoothTransformation);
-    QLabel* successIconLabel = new QLabel;
-    successIconLabel->setFixedSize(372,162);
-    successIconLabel->setPixmap(sc);
-    successIconLabel->setAlignment(Qt::AlignCenter);
-
 
     QLabel* buttonLabel = new QLabel("Help", this);
     buttonLabel->setStyleSheet(
@@ -81,7 +75,6 @@ SuccessForm::SuccessForm(QWidget* parent):QWidget(parent) {
     buttonLayout->addWidget(iconLabel);
     buttonLayout->addStretch(1);
     buttonLayout->addWidget(buttonLabel);
-    helpButton->setLayout(buttonLayout);
     helpButton->setStyleSheet(
         "QPushButton {"
         "   height: 48px;"
@@ -95,13 +88,21 @@ SuccessForm::SuccessForm(QWidget* parent):QWidget(parent) {
         "   color: black;"
         "}"
         );
-    langLayout->addWidget(helpButton);
-    /*****************************************
-    if from reg registration Successfull
-    else LoginSuccess
 
-    *//****************************************/
-    QLabel* headTextLabel = new QLabel("Login Success", this);
+
+    langLayout->addWidget(language);
+    langLayout->addStretch();
+    langLayout->addWidget(helpButton);
+
+
+    QPixmap pix(":/images/successIcon.png");
+    QPixmap sc = pix.scaled(172,162,Qt::KeepAspectRatio,Qt::SmoothTransformation);
+    QLabel* successIconLabel = new QLabel;
+    successIconLabel->setFixedSize(372,162);
+    successIconLabel->setPixmap(sc);
+    successIconLabel->setAlignment(Qt::AlignCenter);
+
+    headTextLabel = new QLabel(header, this);
     headTextLabel->setFixedSize(372,35);
     headTextLabel->setStyleSheet(
         "font-family: 'Outfit';"
@@ -113,10 +114,9 @@ SuccessForm::SuccessForm(QWidget* parent):QWidget(parent) {
     headTextLabel->setAlignment(Qt::AlignHCenter);
 
 
-    QLabel* textLabel = new QLabel("Welcome to Lumin, start exploring courses today.", this);
+    textLabel = new QLabel(lowHeader, this);
     textLabel->setAlignment(Qt::AlignHCenter);
     textLabel->setFixedSize(372,24);
-
     textLabel->setStyleSheet(
         "width: 372px;"
         "height: 24px;"
@@ -126,7 +126,9 @@ SuccessForm::SuccessForm(QWidget* parent):QWidget(parent) {
         "font-size: 16px;"
 
         );
-    QPushButton* startButton = new QPushButton("Start Learning", this);
+
+
+    startButton = new QPushButton(buttonText, this);
     startButton->setFixedSize(372,52);
     startButton->setStyleSheet(
         "QPushButton {"
@@ -150,6 +152,7 @@ SuccessForm::SuccessForm(QWidget* parent):QWidget(parent) {
         "   background-color: #4da380;"
         "}"
         );
+    connect(startButton,&QPushButton::clicked,this,&SuccessForm::onStartClicked);
 
     QLabel* agreement = new QLabel(this);
 
@@ -176,12 +179,18 @@ SuccessForm::SuccessForm(QWidget* parent):QWidget(parent) {
 
     mainLayout->addLayout(langLayout);
     mainLayout->addStretch();
-    mainLayout->addWidget(successIconLabel);
-    mainLayout->addWidget(headTextLabel);
-    mainLayout->addWidget(textLabel);
+    mainLayout->addWidget(successIconLabel,0,Qt::AlignCenter);
+    mainLayout->addWidget(headTextLabel,0,Qt::AlignCenter);
+    mainLayout->addWidget(textLabel,0,Qt::AlignCenter);
     mainLayout->addSpacing(8);
-    mainLayout->addWidget(startButton);
+    mainLayout->addWidget(startButton,0,Qt::AlignCenter);
     mainLayout->addStretch();
-    mainLayout->addWidget(agreement);
+    mainLayout->addWidget(agreement,0,Qt::AlignCenter);
 
+}
+
+void SuccessForm::formUpdate(const QString& header, const QString& lowHeader, const QString& buttonText){
+    headTextLabel->setText(header);
+    textLabel->setText(lowHeader);
+    startButton->setText(buttonText);
 }

@@ -10,7 +10,6 @@ class UnderlinedLineEdit : public QLineEdit {
     Q_OBJECT
 public:
     explicit UnderlinedLineEdit(QWidget* parent = nullptr);
-
 protected:
     void paintEvent(QPaintEvent* event)override;
 
@@ -20,6 +19,7 @@ class MultipleEdit : public QWidget {
     Q_OBJECT
 public:
     explicit MultipleEdit(int n, QWidget* parent = nullptr);
+    QString txt();
 signals:
     void allFilled(bool cond);
 private:

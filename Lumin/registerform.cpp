@@ -8,12 +8,6 @@ RegisterForm::RegisterForm(QWidget* parent): QWidget(parent) {
     QHBoxLayout* buttonLayout = new QHBoxLayout(helpButton);
     buttonLayout->setContentsMargins(16, 8, 12, 8);
     buttonLayout->setSpacing(0);
-    QPixmap pix(":/images/luminIcon.png");
-    QPixmap sc = pix.scaled(32,32,Qt::KeepAspectRatio,Qt::SmoothTransformation);
-    QLabel* luminIconLabel = new QLabel;
-    luminIconLabel->setFixedSize(420,32);
-    luminIconLabel->setPixmap(sc);
-    luminIconLabel->setAlignment(Qt::AlignCenter);
 
     QLabel* iconLabel = new QLabel(this);
     QPixmap iconPixmap(":/images/help.png");
@@ -42,6 +36,13 @@ RegisterForm::RegisterForm(QWidget* parent): QWidget(parent) {
         "   color: black;"
         "}"
         );
+
+    QPixmap pix(":/images/luminIcon.png");
+    QPixmap sc = pix.scaled(32,32,Qt::KeepAspectRatio,Qt::SmoothTransformation);
+    QLabel* luminIconLabel = new QLabel;
+    luminIconLabel->setFixedSize(420,32);
+    luminIconLabel->setPixmap(sc);
+    luminIconLabel->setAlignment(Qt::AlignCenter);
 
     QLabel* headTextLabel = new QLabel("Get started with Lumin!", this);
     headTextLabel->setFixedSize(420,29);
@@ -75,7 +76,7 @@ RegisterForm::RegisterForm(QWidget* parent): QWidget(parent) {
         "font-size: 14px;"
         "color: #000000;"
         );
-    QLineEdit* firstNameEdit = new QLineEdit(this);
+    firstNameEdit = new QLineEdit(this);
     firstNameEdit->setPlaceholderText("First Name");
     firstNameEdit->setFixedSize(420,48);
     firstNameEdit->setStyleSheet(
@@ -107,7 +108,7 @@ RegisterForm::RegisterForm(QWidget* parent): QWidget(parent) {
         "font-size: 14px;"
         "color: #000000;"
         );
-    QLineEdit* lastNameEdit = new QLineEdit(this);
+    lastNameEdit = new QLineEdit(this);
     lastNameEdit->setPlaceholderText("Last Name");
     lastNameEdit->setFixedSize(420,50);
     lastNameEdit->setStyleSheet(
@@ -139,7 +140,7 @@ RegisterForm::RegisterForm(QWidget* parent): QWidget(parent) {
         "font-size: 14px;"
         "color: #000000;"
         );
-    QLineEdit* emailEdit = new QLineEdit(this);
+    emailEdit = new QLineEdit(this);
     emailEdit->setPlaceholderText("Enter your email address");
     emailEdit->setFixedSize(420,48);
     emailEdit->setStyleSheet(
@@ -203,56 +204,7 @@ RegisterForm::RegisterForm(QWidget* parent): QWidget(parent) {
     hints = new PasswordHintWidget(this);
     hints->hide();
 
-    connect(passwordEdit, &QLineEdit::textChanged, [this](const QString& str){
-        bool val = hints->validationUpdate(str);
-        if(!str.isEmpty() && !val){
-            passwordEdit->setStyleSheet(
-                "QLineEdit {"
-                "   font-family: 'Outfit';"
-                "   font-size: 16px;"
-                "   font-weight: 400;"
-                "   line-height: 150%;"
-                "   letter-spacing: 0%;"
-                "   color: #000000;"
-                "   border: 1px solid #d73e3d;"
-                "   border-radius: 8px;"
-                "   padding: 8px 12px;"
-                "}"
-                "QLineEdit::placeholder {"
-                "   font-family: 'Outfit';"
-                "   font-size: 16px;"
-                "   font-weight: 400;"
-                "   line-height: 150%;"
-                "   letter-spacing: 0%;"
-                "   color: #818898;"
-                "}"
-                );
-        }
-        else{
-            passwordEdit->setStyleSheet(
-                "QLineEdit {"
-                "   font-family: 'Outfit';"
-                "   font-size: 16px;"
-                "   font-weight: 400;"
-                "   line-height: 150%;"
-                "   letter-spacing: 0%;"
-                "   color: #000000;"
-                "   border: 1px solid #dfe1e7;"
-                "   border-radius: 8px;"
-                "   padding: 8px 12px;"
-                "}"
-                "QLineEdit::placeholder {"
-                "   font-family: 'Outfit';"
-                "   font-size: 16px;"
-                "   font-weight: 400;"
-                "   line-height: 150%;"
-                "   letter-spacing: 0%;"
-                "   color: #818898;"
-                "}"
-                );
-        }
-        hints->update();
-    });
+
 
     QLabel* confirmLabel = new QLabel("Confirm Password", this);
     confirmLabel->setFixedWidth(420);
@@ -263,7 +215,7 @@ RegisterForm::RegisterForm(QWidget* parent): QWidget(parent) {
         "color: #000000;"
         );
 
-    QLineEdit* confirmEdit = new QLineEdit(this);
+    confirmEdit = new QLineEdit(this);
     confirmEdit->setFixedSize(420,48);
     confirmEdit->setStyleSheet(
         "QLineEdit {"
@@ -289,59 +241,10 @@ RegisterForm::RegisterForm(QWidget* parent): QWidget(parent) {
     confirmEdit->setPlaceholderText("Confirm your Password");
     confirmEdit->setEchoMode(QLineEdit::Password);
 
-    connect(confirmEdit, &QLineEdit::textChanged, [this,confirmEdit](const QString& str){
-
-        if(!str.isEmpty() && str != passwordEdit->text().left(str.length())){
-            confirmEdit->setStyleSheet(
-                "QLineEdit {"
-                "   font-family: 'Outfit';"
-                "   font-size: 16px;"
-                "   font-weight: 400;"
-                "   line-height: 150%;"
-                "   letter-spacing: 0%;"
-                "   color: #000000;"
-                "   border: 1px solid #d73e3d;"
-                "   border-radius: 8px;"
-                "   padding: 8px 12px;"
-                "}"
-                "QLineEdit::placeholder {"
-                "   font-family: 'Outfit';"
-                "   font-size: 16px;"
-                "   font-weight: 400;"
-                "   line-height: 150%;"
-                "   letter-spacing: 0%;"
-                "   color: #818898;"
-                "}"
-                );
-        }
-        else{
-            confirmEdit->setStyleSheet(
-                "QLineEdit {"
-                "   font-family: 'Outfit';"
-                "   font-size: 16px;"
-                "   font-weight: 400;"
-                "   line-height: 150%;"
-                "   letter-spacing: 0%;"
-                "   color: #000000;"
-                "   border: 1px solid #dfe1e7;"
-                "   border-radius: 8px;"
-                "   padding: 8px 12px;"
-                "}"
-                "QLineEdit::placeholder {"
-                "   font-family: 'Outfit';"
-                "   font-size: 16px;"
-                "   font-weight: 400;"
-                "   line-height: 150%;"
-                "   letter-spacing: 0%;"
-                "   color: #818898;"
-                "}"
-                );
-        }
-
-    });
 
 
-    QPushButton* createButton = new QPushButton("Create Account", this);
+
+    createButton = new QPushButton("Create Account", this);
     createButton->setFixedSize(420,52);
     createButton->setStyleSheet(
         "QPushButton {"
@@ -365,6 +268,19 @@ RegisterForm::RegisterForm(QWidget* parent): QWidget(parent) {
         "   background-color: #4da380;"
         "}"
         );
+    createButton->setDisabled(true);
+    connect(passwordEdit, &QLineEdit::textChanged, [this](){
+        editsUpdate();
+    });
+
+    connect(confirmEdit, &QLineEdit::textChanged, [this](){
+        editsUpdate();
+    });
+
+    connect(createButton, &QPushButton::clicked,[this](){
+        emit onCreateButtonClicked(firstNameEdit->text(),lastNameEdit->text(),
+                                   emailEdit->text(),passwordEdit->text());
+    });
 
     QWidget* alreadyWidget = new QWidget;
     alreadyWidget->setFixedSize(420,40);
@@ -402,7 +318,7 @@ RegisterForm::RegisterForm(QWidget* parent): QWidget(parent) {
         "}"
         );
     connect(loginButton, &QPushButton::clicked, [this](){
-        emit loginClicked();
+        emit onloginClicked();
     });
 
     alreadyLayout->addStretch();
@@ -483,6 +399,114 @@ void  RegisterForm::resizeEvent(QResizeEvent* ){
     hints->move(passwordEdit->pos().x() - 6,passwordEdit->pos().y() - hints->size().height() - 20);
 
 }
+
+void RegisterForm::editsUpdate(){
+
+    if(!confirmEdit->text().isEmpty() &&
+        confirmEdit->text() != passwordEdit->text().left(confirmEdit->text().length())){
+
+        confirmEdit->setStyleSheet(
+            "QLineEdit {"
+            "   font-family: 'Outfit';"
+            "   font-size: 16px;"
+            "   font-weight: 400;"
+            "   line-height: 150%;"
+            "   letter-spacing: 0%;"
+            "   color: #000000;"
+            "   border: 1px solid #d73e3d;"
+            "   border-radius: 8px;"
+            "   padding: 8px 12px;"
+            "}"
+            "QLineEdit::placeholder {"
+            "   font-family: 'Outfit';"
+            "   font-size: 16px;"
+            "   font-weight: 400;"
+            "   line-height: 150%;"
+            "   letter-spacing: 0%;"
+            "   color: #818898;"
+            "}"
+            );
+
+    }
+    else{
+        confirmEdit->setStyleSheet(
+            "QLineEdit {"
+            "   font-family: 'Outfit';"
+            "   font-size: 16px;"
+            "   font-weight: 400;"
+            "   line-height: 150%;"
+            "   letter-spacing: 0%;"
+            "   color: #000000;"
+            "   border: 1px solid #dfe1e7;"
+            "   border-radius: 8px;"
+            "   padding: 8px 12px;"
+            "}"
+            "QLineEdit::placeholder {"
+            "   font-family: 'Outfit';"
+            "   font-size: 16px;"
+            "   font-weight: 400;"
+            "   line-height: 150%;"
+            "   letter-spacing: 0%;"
+            "   color: #818898;"
+            "}"
+            );
+
+    }
+
+
+
+    bool val = hints->validationUpdate(passwordEdit->text());
+    if(!(passwordEdit->text().isEmpty() || val)){
+        passwordEdit->setStyleSheet(
+            "QLineEdit {"
+            "   font-family: 'Outfit';"
+            "   font-size: 16px;"
+            "   font-weight: 400;"
+            "   line-height: 150%;"
+            "   letter-spacing: 0%;"
+            "   color: #000000;"
+            "   border: 1px solid #d73e3d;"
+            "   border-radius: 8px;"
+            "   padding: 8px 12px;"
+            "}"
+            "QLineEdit::placeholder {"
+            "   font-family: 'Outfit';"
+            "   font-size: 16px;"
+            "   font-weight: 400;"
+            "   line-height: 150%;"
+            "   letter-spacing: 0%;"
+            "   color: #818898;"
+            "}"
+            );
+    }
+    else{
+        passwordEdit->setStyleSheet(
+            "QLineEdit {"
+            "   font-family: 'Outfit';"
+            "   font-size: 16px;"
+            "   font-weight: 400;"
+            "   line-height: 150%;"
+            "   letter-spacing: 0%;"
+            "   color: #000000;"
+            "   border: 1px solid #dfe1e7;"
+            "   border-radius: 8px;"
+            "   padding: 8px 12px;"
+            "}"
+            "QLineEdit::placeholder {"
+            "   font-family: 'Outfit';"
+            "   font-size: 16px;"
+            "   font-weight: 400;"
+            "   line-height: 150%;"
+            "   letter-spacing: 0%;"
+            "   color: #818898;"
+            "}"
+            );
+    }
+    createButton->setDisabled(!(val && passwordEdit->text() == confirmEdit->text()));
+    hints->update();
+
+}
+
 
 
 

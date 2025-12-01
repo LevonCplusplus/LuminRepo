@@ -147,6 +147,10 @@ ResetPassForm::ResetPassForm(QWidget* parent)
         "}"
         );
 
+    connect(backToLoginButton, &QPushButton::clicked,[this](){
+        emit onBackToLoginClicked();
+    });
+
     QLabel* agreement = new QLabel(this);
 
     agreement->setText(
