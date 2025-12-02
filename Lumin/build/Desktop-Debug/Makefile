@@ -56,6 +56,7 @@ SOURCES       = ../../apiclient.cpp \
 		../../dashboard.cpp \
 		../../dashboardcontent.cpp \
 		../../dashboardleft.cpp \
+		../../loadingOverlay.cpp \
 		../../loginform.cpp \
 		../../main.cpp \
 		../../mainwindow.cpp \
@@ -72,6 +73,7 @@ SOURCES       = ../../apiclient.cpp \
 		moc_dashboard.cpp \
 		moc_dashboardcontent.cpp \
 		moc_dashboardleft.cpp \
+		moc_loadingOverlay.cpp \
 		moc_loginform.cpp \
 		moc_mainwindow.cpp \
 		moc_multipleedit.cpp \
@@ -87,6 +89,7 @@ OBJECTS       = apiclient.o \
 		dashboard.o \
 		dashboardcontent.o \
 		dashboardleft.o \
+		loadingOverlay.o \
 		loginform.o \
 		main.o \
 		mainwindow.o \
@@ -104,6 +107,7 @@ OBJECTS       = apiclient.o \
 		moc_dashboard.o \
 		moc_dashboardcontent.o \
 		moc_dashboardleft.o \
+		moc_loadingOverlay.o \
 		moc_loginform.o \
 		moc_mainwindow.o \
 		moc_multipleedit.o \
@@ -203,6 +207,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		../../dashboard.h \
 		../../dashboardcontent.h \
 		../../dashboardleft.h \
+		../../loadingOverlay.h \
 		../../loginform.h \
 		../../mainwindow.h \
 		../../multipleedit.h \
@@ -218,6 +223,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		../../dashboard.cpp \
 		../../dashboardcontent.cpp \
 		../../dashboardleft.cpp \
+		../../loadingOverlay.cpp \
 		../../loginform.cpp \
 		../../main.cpp \
 		../../mainwindow.cpp \
@@ -430,8 +436,8 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../../resources.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../../apiclient.h ../../dashboard.h ../../dashboardcontent.h ../../dashboardleft.h ../../loginform.h ../../mainwindow.h ../../multipleedit.h ../../passwordhintwidget.h ../../registerform.h ../../resetpassform.h ../../settings.h ../../successform.h ../../tokenmanager.h ../../transactions.h ../../user.h ../../verifyform.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../../apiclient.cpp ../../dashboard.cpp ../../dashboardcontent.cpp ../../dashboardleft.cpp ../../loginform.cpp ../../main.cpp ../../mainwindow.cpp ../../multipleedit.cpp ../../passwordhintwidget.cpp ../../registerform.cpp ../../resetpassform.cpp ../../settings.cpp ../../successform.cpp ../../transactions.cpp ../../user.cpp ../../verifyform.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../../apiclient.h ../../dashboard.h ../../dashboardcontent.h ../../dashboardleft.h ../../loadingOverlay.h ../../loginform.h ../../mainwindow.h ../../multipleedit.h ../../passwordhintwidget.h ../../registerform.h ../../resetpassform.h ../../settings.h ../../successform.h ../../tokenmanager.h ../../transactions.h ../../user.h ../../verifyform.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../../apiclient.cpp ../../dashboard.cpp ../../dashboardcontent.cpp ../../dashboardleft.cpp ../../loadingOverlay.cpp ../../loginform.cpp ../../main.cpp ../../mainwindow.cpp ../../multipleedit.cpp ../../passwordhintwidget.cpp ../../registerform.cpp ../../resetpassform.cpp ../../settings.cpp ../../successform.cpp ../../transactions.cpp ../../user.cpp ../../verifyform.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -489,9 +495,9 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
 	g++ -pipe -g -std=gnu++1z -Wall -Wextra -dM -E -o moc_predefs.h /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_apiclient.cpp moc_dashboard.cpp moc_dashboardcontent.cpp moc_dashboardleft.cpp moc_loginform.cpp moc_mainwindow.cpp moc_multipleedit.cpp moc_passwordhintwidget.cpp moc_registerform.cpp moc_resetpassform.cpp moc_settings.cpp moc_successform.cpp moc_tokenmanager.cpp moc_transactions.cpp moc_verifyform.cpp
+compiler_moc_header_make_all: moc_apiclient.cpp moc_dashboard.cpp moc_dashboardcontent.cpp moc_dashboardleft.cpp moc_loadingOverlay.cpp moc_loginform.cpp moc_mainwindow.cpp moc_multipleedit.cpp moc_passwordhintwidget.cpp moc_registerform.cpp moc_resetpassform.cpp moc_settings.cpp moc_successform.cpp moc_tokenmanager.cpp moc_transactions.cpp moc_verifyform.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_apiclient.cpp moc_dashboard.cpp moc_dashboardcontent.cpp moc_dashboardleft.cpp moc_loginform.cpp moc_mainwindow.cpp moc_multipleedit.cpp moc_passwordhintwidget.cpp moc_registerform.cpp moc_resetpassform.cpp moc_settings.cpp moc_successform.cpp moc_tokenmanager.cpp moc_transactions.cpp moc_verifyform.cpp
+	-$(DEL_FILE) moc_apiclient.cpp moc_dashboard.cpp moc_dashboardcontent.cpp moc_dashboardleft.cpp moc_loadingOverlay.cpp moc_loginform.cpp moc_mainwindow.cpp moc_multipleedit.cpp moc_passwordhintwidget.cpp moc_registerform.cpp moc_resetpassform.cpp moc_settings.cpp moc_successform.cpp moc_tokenmanager.cpp moc_transactions.cpp moc_verifyform.cpp
 moc_apiclient.cpp: ../../apiclient.h \
 		../../user.h \
 		../../tokenmanager.h \
@@ -519,7 +525,13 @@ moc_dashboardleft.cpp: ../../dashboardleft.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/levon/Lumin/build/Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/levon/Lumin -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/gcc/x86_64-linux-gnu/13/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../dashboardleft.h -o moc_dashboardleft.cpp
 
+moc_loadingOverlay.cpp: ../../loadingOverlay.h \
+		moc_predefs.h \
+		/usr/lib/qt5/bin/moc
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/levon/Lumin/build/Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/levon/Lumin -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/gcc/x86_64-linux-gnu/13/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../loadingOverlay.h -o moc_loadingOverlay.cpp
+
 moc_loginform.cpp: ../../loginform.h \
+		../../loadingOverlay.h \
 		../../registerform.h \
 		../../passwordhintwidget.h \
 		../../verifyform.h \
@@ -530,6 +542,7 @@ moc_loginform.cpp: ../../loginform.h \
 
 moc_mainwindow.cpp: ../../mainwindow.h \
 		../../loginform.h \
+		../../loadingOverlay.h \
 		../../registerform.h \
 		../../passwordhintwidget.h \
 		../../verifyform.h \
@@ -632,7 +645,11 @@ dashboardcontent.o: ../../dashboardcontent.cpp ../../dashboardcontent.h
 dashboardleft.o: ../../dashboardleft.cpp ../../dashboardleft.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o dashboardleft.o ../../dashboardleft.cpp
 
+loadingOverlay.o: ../../loadingOverlay.cpp ../../loadingOverlay.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o loadingOverlay.o ../../loadingOverlay.cpp
+
 loginform.o: ../../loginform.cpp ../../loginform.h \
+		../../loadingOverlay.h \
 		../../registerform.h \
 		../../passwordhintwidget.h \
 		../../verifyform.h \
@@ -641,6 +658,7 @@ loginform.o: ../../loginform.cpp ../../loginform.h \
 
 main.o: ../../main.cpp ../../mainwindow.h \
 		../../loginform.h \
+		../../loadingOverlay.h \
 		../../registerform.h \
 		../../passwordhintwidget.h \
 		../../verifyform.h \
@@ -659,6 +677,7 @@ main.o: ../../main.cpp ../../mainwindow.h \
 
 mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		../../loginform.h \
+		../../loadingOverlay.h \
 		../../registerform.h \
 		../../passwordhintwidget.h \
 		../../verifyform.h \
@@ -720,6 +739,9 @@ moc_dashboardcontent.o: moc_dashboardcontent.cpp
 
 moc_dashboardleft.o: moc_dashboardleft.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_dashboardleft.o moc_dashboardleft.cpp
+
+moc_loadingOverlay.o: moc_loadingOverlay.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_loadingOverlay.o moc_loadingOverlay.cpp
 
 moc_loginform.o: moc_loginform.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_loginform.o moc_loginform.cpp

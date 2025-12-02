@@ -9,6 +9,8 @@
 #include "user.h"
 #include "tokenmanager.h"
 
+enum class LoginStatus{Success, Failure};
+
 class ApiClient: public QObject{
     Q_OBJECT
 public:
@@ -22,7 +24,7 @@ public slots:
     void refreshAccessToken();
 
 signals:
-    void loginSuccess(const QString& str,const QString& str1);
+    void loginResult(LoginStatus status,const QString& message,const QString& mail = nullptr,const QString& session = nullptr);
     void verifySuccess(User user);
     void tokenRefreshed();
     void authExpired();

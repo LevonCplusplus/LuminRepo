@@ -1,6 +1,6 @@
 #include "dashboard.h"
 
-Dashboard::Dashboard(User user1,QWidget* parent):QWidget(parent) {
+Dashboard::Dashboard(User&& user1,QWidget* parent):QWidget(parent) {
     this->user = new User(std::move(user1));
     this->setAutoFillBackground(true);
     QPalette pal = this->palette();

@@ -13,7 +13,6 @@
 #include <QPushButton>
 #include <QCheckBox>
 
-
 #include "registerform.h"
 #include "verifyform.h"
 

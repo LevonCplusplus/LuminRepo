@@ -3,9 +3,25 @@
 MainWindow::MainWindow(QWidget* parent):QMainWindow(parent) {
 
     setMinimumSize(900, 800);
+    bar = new QStatusBar(this);
+    setStatusBar(bar);
+
+    statusLabel = new QLabel("Ready", this);
+    statusLabel->setStyleSheet(
+        "color: white;"
+        "background-color: #333333;"
+        "padding: 4px 8px;"
+        "border-radius: 4px;"
+        );
+    bar->addPermanentWidget(statusLabel);
+    setStatusMessage("Logging in...", QColor("#2196f3"),5000);
+
+    overlay = new LoadingOverlay(this);
     this->setStyleSheet("background-color: white;");
     centWidget = new QWidget;
     this->setCentralWidget(new QStackedWidget);
+    centralWidget()->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
     qobject_cast<QStackedWidget*>(centralWidget())->addWidget(centWidget);
     qobject_cast<QStackedWidget*>(centralWidget())->setCurrentWidget(centWidget);
     mainLayout = new QHBoxLayout;
@@ -39,11 +55,25 @@ MainWindow::MainWindow(QWidget* parent):QMainWindow(parent) {
         leftWidget->setCurrentWidget(loginForm);
     });
 
-    connect(loginForm,&LoginForm::onLoginClicked,apiClient,&ApiClient::loginRequest);
-    connect(apiClient,&ApiClient::loginSuccess,this,&MainWindow::toVerify);
+    connect(loginForm, &LoginForm::onLoginClicked,[this](const QString& mail,const QString& pass) {
+
+        overlay->raise();
+        overlay->start();
+        apiClient->loginRequest(mail,pass);
+    });
+    connect(apiClient,&ApiClient::loginResult,[this](LoginStatus status,const QString& message,const QString& mail,const QString& session){
+        overlay->stop();
+        if(status == LoginStatus::Success){
+            setStatusMessage("Login successful!", QColor("#4caf50"),5000);
+            toVerify(mail,session);
+        }else{
+            setStatusMessage(message, QColor("#f44336"),5000);
+        }
+    });
     connect(apiClient,&ApiClient::verifySuccess,[this](User user){
         this->successShow("Login Success","Welcome to Lumin, start exploring courses today.","Start Learning",user);
-    });
+    });//levonlevonvarosyan@gmail.com
+    //Test.account.2025
     connect(loginForm,&LoginForm::onForgotPasswordClicked,[this](){
         leftWidget->setCurrentWidget(resetPassForm);
     });
@@ -65,9 +95,10 @@ void MainWindow::resizeEvent(QResizeEvent* event)
             );
         labelForPhoto->setPixmap(scaled);
     }
-
 }
 void MainWindow::toVerify(const QString& maskedMail,const QString& sessionToken){
+
+    overlay->stop();
     verifyForm = new VerifyForm(maskedMail,sessionToken);
     connect(verifyForm,&VerifyForm::onBackToLoginClicked,[this](){
         leftWidget->setCurrentWidget(loginForm);
@@ -80,8 +111,8 @@ void MainWindow::toVerify(const QString& maskedMail,const QString& sessionToken)
 }
 void MainWindow::successShow(const QString& header,const QString& lowHeader,const QString& buttonText,User user = User()){
     if(header == "Login Success"){
-        connect(successForm,&SuccessForm::onStartClicked,[this,user](){
-            dashboard = new Dashboard(user);
+        connect(successForm,&SuccessForm::onStartClicked,[this, user]()mutable{
+            dashboard = new Dashboard(std::move(user));
             connect(dashboard,&Dashboard::changingUserProfile,[this](const QString& firstName,const QString& lastName){
                 apiClient->updateProfileRequest(firstName,lastName);
             });
@@ -91,4 +122,19 @@ void MainWindow::successShow(const QString& header,const QString& lowHeader,cons
     }
     successForm->formUpdate(header, lowHeader, buttonText);
     leftWidget->setCurrentWidget(successForm);
+}
+
+void MainWindow::setStatusMessage(const QString& msg, const QColor& color,int durationMs)
+{
+    if(durationMs > 0){
+    bar->show();
+    statusLabel->setText(msg);
+    statusLabel->show();
+    statusLabel->setStyleSheet(QString(
+                                   "QLabel { color: white; background-color: %1; padding: 4px 8px; border-radius: 4px; }"
+                                   ).arg(color.name()));
+        QTimer::singleShot(durationMs, this, [this](){
+            bar->hide();
+        });
+    }
 }

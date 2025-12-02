@@ -15,7 +15,7 @@
 class Dashboard: public QWidget{
     Q_OBJECT
 public:
-    Dashboard(User user,QWidget* parent = nullptr);
+    Dashboard(User&& user,QWidget* parent = nullptr);
    // void paintEvent(QPaintEvent *event);
 signals:
     void changingUserProfile(const QString& first,const QString& last);

@@ -31,12 +31,10 @@ void ApiClient::loginRequest(const QString& mail, const QString& pass){
            QJsonObject data = obj["data"].toObject();
            QString mail = data["maskedEmail"].toString();
            QString session = data["sessionToken"].toString();
-
-           emit loginSuccess(mail,session);
+           emit loginResult(LoginStatus::Success,message,mail,session);
         }else{
-           qDebug() << "offf";
+            emit loginResult(LoginStatus::Failure,message);
         }
-
         qDebug() << "Success:" << success;
         qDebug() << "Message:" << message;
 

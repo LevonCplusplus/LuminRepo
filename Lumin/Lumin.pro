@@ -1,5 +1,6 @@
 QT += widgets
 QT += network
+QT += core
 
 CONFIG += c++17
 
@@ -8,6 +9,7 @@ SOURCES += \
     dashboard.cpp \
     dashboardcontent.cpp \
     dashboardleft.cpp \
+    loadingOverlay.cpp \
     loginform.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -26,6 +28,7 @@ HEADERS += \
     dashboard.h \
     dashboardcontent.h \
     dashboardleft.h \
+    loadingOverlay.h \
     loginform.h \
     mainwindow.h \
     multipleedit.h \

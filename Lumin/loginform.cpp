@@ -232,6 +232,7 @@
         );
 
 
+
     connect(loginButton,&QPushButton::clicked,this,&LoginForm::sendLogin);
 
     QWidget* dontHaveWidget = new QWidget;
@@ -319,58 +320,12 @@
     mainLayout->addStretch();
     mainLayout->addWidget(agreement,0,Qt::AlignHCenter);
 
-    // stackedWidget->addWidget(leftWidget);
-    // stackedWidget->addWidget(regForm);
-
-
-
 
 }
 
 void LoginForm::sendLogin(){
     emit onLoginClicked(emailEdit->text(),passwordEdit->text());
 }
- // void LoginForm::sendLogin()
- // {
- //     QUrl url("https://learning-dashboard-rouge.vercel.app/api/auth/login");
- //     QNetworkRequest request(url);
-
- //     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-
- //     QJsonObject json;
- //     json["email"] = emailEdit->text();
- //     json["password"] = passwordEdit->text();
-
- //     QJsonDocument doc(json);
- //     QByteArray requestData = doc.toJson();
- //     QNetworkAccessManager* manager = new QNetworkAccessManager(this);
-
- //     QNetworkReply* reply = manager->post(request, requestData);
-
- //     connect(reply, &QNetworkReply::finished, [reply,this]() {
- //         QByteArray response = reply->readAll();
- //         qDebug() << "Server reply:" << response;
-
- //         QJsonDocument jsonDoc = QJsonDocument::fromJson(response);
- //         QJsonObject obj = jsonDoc.object();
-
- //         bool success = obj["success"].toBool();
- //         QString message = obj["message"].toString();
- //         if(success){
- //            QJsonObject data = obj["data"].toObject();
- //            QString mail = data["maskedEmail"].toString();
- //            emit loginSuccess(mail);
- //         }else{
- //            qDebug() << "offf";
- //         }
-
- //         qDebug() << "Success:" << success;
- //         qDebug() << "Message:" << message;
-
- //         reply->deleteLater();
- //     });
- // }
-
 
 
 
