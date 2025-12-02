@@ -12,9 +12,7 @@
 int main(int argc,char* argv[]){
 
     QApplication app(argc,argv);
-    // MainWindow form;
-    // form.show();
-    VerifyForm vf("a", "b");
-    vf.show();
+    MainWindow form;
+    form.show();
     app.exec();
 }
