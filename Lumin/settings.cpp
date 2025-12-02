@@ -58,6 +58,7 @@ Settings::Settings(const User* user1,QWidget *parent)
     QLabel* photoLabel = new QLabel;
     photoLabel->setFixedSize(72,72);
     QPushButton* photoChangeButton = new QPushButton;
+    photoChangeButton->setFixedSize(96,33);
     photoChangeButton->setText("Change Photo");
     photoChangeButton->setStyleSheet(" border: 1px solid #dfe1e7;"
                                      " border-radius: 8px;"

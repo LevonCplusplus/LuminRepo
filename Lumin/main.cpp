@@ -9,10 +9,17 @@
 #include "dashboard.h"
 #include "transactions.h"
 #include "settings.h"
+#include "user.h"
+
 int main(int argc,char* argv[]){
 
     QApplication app(argc,argv);
-    MainWindow form;
-    form.show();
+    // MainWindow form;
+    // User user;
+    // Dashboard dash(user);
+    //dash.show();
+    VerifyForm vf("a","b");
+    vf.show();
     app.exec();
 }
+//123456
