@@ -101,7 +101,6 @@
         "}"
         );
 
-
     QLabel* passwordLabel = new QLabel("Password", this);
     passwordLabel->setFixedSize(420,20);
     passwordLabel->setStyleSheet(
@@ -113,28 +112,52 @@
     passwordEdit = new QLineEdit(this);
     passwordEdit->setFixedSize(420,48);
     passwordEdit->setStyleSheet(
-            "QLineEdit {"
-            "   font-family: 'Outfit';"
-            "   font-size: 16px;"
-            "   font-weight: 400;"
-            "   line-height: 150%;"
-            "   letter-spacing: 0%;"
-            "   color: #000000;"
-            "   border: 1px solid #dfe1e7;"
-            "   border-radius: 8px;"
-            "   padding: 8px 12px;"
-            "}"
-            "QLineEdit::placeholder {"
-            "   font-family: 'Outfit';"
-            "   font-size: 16px;"
-            "   font-weight: 400;"
-            "   line-height: 150%;"
-            "   letter-spacing: 0%;"
-            "   color: #818898;"
-            "}"
+        "QLineEdit {"
+        "   font-family: 'Outfit';"
+        "   font-size: 16px;"
+        "   font-weight: 400;"
+        "   line-height: 150%;"
+        "   letter-spacing: 0%;"
+        "   color: #000000;"
+        "   border: 1px solid #dfe1e7;"
+        "   border-radius: 8px;"
+        "   padding: 8px 12px;"
+        "}"
+        "QLineEdit::placeholder {"
+        "   font-family: 'Outfit';"
+        "   font-size: 16px;"
+        "   font-weight: 400;"
+        "   line-height: 150%;"
+        "   letter-spacing: 0%;"
+        "   color: #818898;"
+        "}"
         );
     passwordEdit->setPlaceholderText("Enter your Password");
     passwordEdit->setEchoMode(QLineEdit::Password);
+
+    QAction *togglePasswordAction = new QAction(passwordEdit);
+
+    togglePasswordAction->setIcon(QIcon(":/images/eye_closed.png"));
+    togglePasswordAction->setToolTip("Show password");
+
+    passwordEdit->addAction(togglePasswordAction, QLineEdit::TrailingPosition);
+
+    connect(togglePasswordAction, &QAction::triggered, [this, togglePasswordAction]() {
+        if (passwordEdit->echoMode() == QLineEdit::Password) {
+            passwordEdit->setEchoMode(QLineEdit::Normal);
+
+            togglePasswordAction->setIcon(QIcon(":/images/eye_open.png"));
+
+            togglePasswordAction->setToolTip("Hide password");
+        } else {
+            passwordEdit->setEchoMode(QLineEdit::Password);
+
+            togglePasswordAction->setIcon(QIcon(":/images/eye_closed.png"));
+
+            togglePasswordAction->setToolTip("Show password");
+        }
+    });
+
 
     QWidget* remember = new QWidget;
     remember->setFixedSize(420,35);

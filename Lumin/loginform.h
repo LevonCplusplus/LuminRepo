@@ -12,6 +12,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QCheckBox>
+#include <QAction>
 
 #include "registerform.h"
 #include "verifyform.h"

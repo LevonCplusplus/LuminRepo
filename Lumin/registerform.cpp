@@ -201,6 +201,30 @@ RegisterForm::RegisterForm(QWidget* parent): QWidget(parent) {
     passwordEdit->setEchoMode(QLineEdit::Password);
     passwordEdit->installEventFilter(this);
 
+    QAction *togglePasswordAction = new QAction(passwordEdit);
+
+    togglePasswordAction->setIcon(QIcon(":/images/eye_closed.png"));
+    togglePasswordAction->setToolTip("Show password");
+
+    passwordEdit->addAction(togglePasswordAction, QLineEdit::TrailingPosition);
+
+    connect(togglePasswordAction, &QAction::triggered, [this, togglePasswordAction]() {
+        if (passwordEdit->echoMode() == QLineEdit::Password) {
+            passwordEdit->setEchoMode(QLineEdit::Normal);
+
+            togglePasswordAction->setIcon(QIcon(":/images/eye_open.png"));
+
+            togglePasswordAction->setToolTip("Hide password");
+        } else {
+            passwordEdit->setEchoMode(QLineEdit::Password);
+
+            togglePasswordAction->setIcon(QIcon(":/images/eye_closed.png"));
+
+            togglePasswordAction->setToolTip("Show password");
+        }
+    });
+
+
     hints = new PasswordHintWidget(this);
     hints->hide();
 
@@ -241,6 +265,28 @@ RegisterForm::RegisterForm(QWidget* parent): QWidget(parent) {
     confirmEdit->setPlaceholderText("Confirm your Password");
     confirmEdit->setEchoMode(QLineEdit::Password);
 
+    QAction *toggleConfirmAction = new QAction(passwordEdit);
+
+    toggleConfirmAction->setIcon(QIcon(":/images/eye_closed.png"));
+    toggleConfirmAction->setToolTip("Show password");
+
+    confirmEdit->addAction(toggleConfirmAction, QLineEdit::TrailingPosition);
+
+    connect(toggleConfirmAction, &QAction::triggered, [this, toggleConfirmAction]() {
+        if (confirmEdit->echoMode() == QLineEdit::Password) {
+            confirmEdit->setEchoMode(QLineEdit::Normal);
+
+            toggleConfirmAction->setIcon(QIcon(":/images/eye_open.png"));
+
+            toggleConfirmAction->setToolTip("Hide password");
+        } else {
+            confirmEdit->setEchoMode(QLineEdit::Password);
+
+            toggleConfirmAction->setIcon(QIcon(":/images/eye_closed.png"));
+
+            toggleConfirmAction->setToolTip("Show password");
+        }
+    });
 
 
 

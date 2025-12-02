@@ -16,6 +16,7 @@
 #include <QPainter>
 #include <QPaintEvent>
 #include <QResizeEvent>
+#include <QAction>
 
 #include"passwordhintwidget.h"
 

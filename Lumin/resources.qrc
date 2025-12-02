@@ -21,5 +21,7 @@
         <file>transactions.png</file>
         <file>users.png</file>
         <file>revenue.png</file>
+        <file>eye_open.png</file>
+        <file>eye_closed.png</file>
     </qresource>
 </RCC>
