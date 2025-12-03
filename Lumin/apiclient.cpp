@@ -31,9 +31,9 @@ void ApiClient::loginRequest(const QString& mail, const QString& pass){
            QJsonObject data = obj["data"].toObject();
            QString mail = data["maskedEmail"].toString();
            QString session = data["sessionToken"].toString();
-           emit loginResult(LoginStatus::Success,message,mail,session);
+           emit loginResult(Status::Success,message,mail,session);
         }else{
-            emit loginResult(LoginStatus::Failure,message);
+            emit loginResult(Status::Failure,message);
         }
         qDebug() << "Success:" << success;
         qDebug() << "Message:" << message;
@@ -73,7 +73,9 @@ void ApiClient::verifyRequest(const QString& verCod,const QString& sessionToken)
             tokenManager->updateAccessToken(accessToken);
             tokenManager->updateRefreshToken(refreshToken);
 
-            emit verifySuccess(user);
+            emit verifyResult(Status::Success,user);
+        }else{
+            emit verifyResult(Status::Failure);
         }
 
         reply->deleteLater();

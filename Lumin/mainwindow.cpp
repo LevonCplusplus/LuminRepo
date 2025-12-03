@@ -2,19 +2,16 @@
 
 MainWindow::MainWindow(QWidget* parent):QMainWindow(parent) {
 
+    statusTimer = new QTimer(this);
     setMinimumSize(900, 800);
-    bar = new QStatusBar(this);
-    setStatusBar(bar);
-
-    statusLabel = new QLabel("Ready", this);
+    statusLabel = new QLabel(this);
     statusLabel->setStyleSheet(
         "color: white;"
         "background-color: #333333;"
         "padding: 4px 8px;"
         "border-radius: 4px;"
         );
-    bar->addPermanentWidget(statusLabel);
-    setStatusMessage("Logging in...", QColor("#2196f3"),5000);
+    setStatusMessage("Logging in", QColor("#2196f3"),9000);
 
     overlay = new LoadingOverlay(this);
     this->setStyleSheet("background-color: white;");
@@ -61,18 +58,24 @@ MainWindow::MainWindow(QWidget* parent):QMainWindow(parent) {
         overlay->start();
         apiClient->loginRequest(mail,pass);
     });
-    connect(apiClient,&ApiClient::loginResult,[this](LoginStatus status,const QString& message,const QString& mail,const QString& session){
+    connect(apiClient,&ApiClient::loginResult,[this](Status status,const QString& message,const QString& mail,const QString& session){
         overlay->stop();
-        if(status == LoginStatus::Success){
+        if(status == Status::Success){
             setStatusMessage("Login successful!", QColor("#4caf50"),5000);
             toVerify(mail,session);
         }else{
-            setStatusMessage(message, QColor("#f44336"),5000);
+            setStatusMessage(message+"!", QColor("#f44336"),5000);
         }
     });
-    connect(apiClient,&ApiClient::verifySuccess,[this](User user){
-        this->successShow("Login Success","Welcome to Lumin, start exploring courses today.","Start Learning",user);
-    });//levonlevonvarosyan@gmail.com
+    connect(apiClient,&ApiClient::verifyResult,[this](Status status,User user){
+        overlay->stop();
+        if(status == Status::Success){
+            this->successShow("Login Success","Welcome to Lumin, start exploring courses today.","Start Learning",user);
+        }else{
+            setStatusMessage("Incorrect verification code!", QColor("#f44336"),5000);
+        }
+    });
+    //levonlevonvarosyan@gmail.com
     //Test.account.2025
     connect(loginForm,&LoginForm::onForgotPasswordClicked,[this](){
         leftWidget->setCurrentWidget(resetPassForm);
@@ -81,6 +84,7 @@ MainWindow::MainWindow(QWidget* parent):QMainWindow(parent) {
     connect(apiClient,&ApiClient::authExpired,[](){
         qDebug() << "token error";
     });
+    statusLabel->raise();
 }
 void MainWindow::resizeEvent(QResizeEvent* event)
 {
@@ -104,7 +108,11 @@ void MainWindow::toVerify(const QString& maskedMail,const QString& sessionToken)
         leftWidget->setCurrentWidget(loginForm);
     });
     connect(verifyForm,&VerifyForm::onResendClicked,loginForm,&LoginForm::sendLogin);//????????????????
-    connect(verifyForm,&VerifyForm::onVerifyClicked,apiClient,&ApiClient::verifyRequest);
+    connect(verifyForm,&VerifyForm::onVerifyClicked,[this](const QString& verCod, const QString& sessionToken){
+        overlay->raise();
+        overlay->start();
+        apiClient->verifyRequest(verCod,sessionToken);
+    });
     leftWidget->addWidget(verifyForm);
     leftWidget->setCurrentWidget(verifyForm);
 
@@ -126,15 +134,36 @@ void MainWindow::successShow(const QString& header,const QString& lowHeader,cons
 
 void MainWindow::setStatusMessage(const QString& msg, const QColor& color,int durationMs)
 {
-    if(durationMs > 0){
-    bar->show();
     statusLabel->setText(msg);
+    statusLabel->adjustSize();
+
+    statusLabel->raise();
     statusLabel->show();
+
+    statusLabel->move(width() - statusLabel->width() - 20, height() - 40);
     statusLabel->setStyleSheet(QString(
                                    "QLabel { color: white; background-color: %1; padding: 4px 8px; border-radius: 4px; }"
                                    ).arg(color.name()));
-        QTimer::singleShot(durationMs, this, [this](){
-            bar->hide();
+    if (msg == "Logging in"){
+        connect(statusTimer, &QTimer::timeout, [this]() {
+            QString text = statusLabel->text();
+
+            if (text.endsWith(QString(3, '.'))) {
+                statusLabel->setText(text.left(text.size() - 3));
+            }
+            else {
+                statusLabel->setText(text + '.');
+            }
+
+            statusLabel->adjustSize();
+        });
+        statusTimer->start(400);
+    }
+
+    if (durationMs > 0) {
+        QTimer::singleShot(durationMs, this, [this]() {
+            statusTimer->stop();
+            statusLabel->hide();
         });
     }
 }

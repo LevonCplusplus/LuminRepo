@@ -27,7 +27,7 @@ public slots:
     void toVerify(const QString& maskedMail,const QString& sessionToken);
     void successShow(const QString& header,const QString& lowHeader,const QString& buttonText,User user);
 private:
-    QStatusBar* bar;
+    QTimer* statusTimer;
     QLabel* statusLabel;
     LoadingOverlay* overlay;
     QWidget* centWidget;
